@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const pool = require('./database');
 
 const app = express();
@@ -7,6 +8,10 @@ const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// 生产环境：提供前端静态文件
+const distPath = path.join(__dirname, '../frontend/dist');
+app.use(express.static(distPath));
 
 // ─── 部门 API ─────────────────────────────────────────
 
@@ -101,6 +106,11 @@ app.delete('/api/employees/:id', async (req, res) => {
   if (!existing[0]) return res.status(404).json({ message: '员工不存在' });
   await pool.query('DELETE FROM employees WHERE id = ?', [req.params.id]);
   res.json({ message: '删除成功' });
+});
+
+// SPA 路由回退（必须放在最后）
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(PORT, () => {

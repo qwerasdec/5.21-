@@ -2,20 +2,13 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Build & push Docker image
-        run: |
-          docker build -t employee-management .
-          # 如果有 Docker Hub / 阿里云镜像仓库，取消下面注释
-          # docker tag employee-management your-registry/employee-management:latest
-          # docker push your-registry/employee-management:latest
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1
@@ -24,6 +17,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /app/employee-management
+            cd ~/5.21-
             git pull
             docker compose up -d --build

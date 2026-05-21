@@ -18,6 +18,5 @@ FROM node:22-alpine
 WORKDIR /app
 COPY --from=backend /app/backend ./backend
 COPY --from=frontend /app/frontend/dist ./frontend/dist
-RUN npm install -g serve
-EXPOSE 3001 5173
+EXPOSE 3001
 CMD ["node", "backend/server.js"]
